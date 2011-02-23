@@ -5,7 +5,10 @@
       $(window).trigger('navigate', href);
     };
 
+    var loaded = false;
+
     window.onpopstate = function (e, state) {
+      if (!loaded) { loaded = true; return; } // Skip the first load
       $(window).trigger('navigate', window.location.pathname);
     };
   }
