@@ -1,47 +1,47 @@
-jQuery hashlisten v0.1.0
-========================
+Livenavigate
+============
 
-Monitors the URL for changes in the hash. Requires JQuery 1.3+.
+#### In-page navigation that doesn't break the back button and actually changes the URL.
 
-This is often used for pages that have many states. If each state
-is represented by a different hash in the URL (for instance,
-http://site.com/#edit), clicking the back button will return the
-page to the previous state.
+What it solves
+--------------
 
-The challenge: there is no browser event fired after clicking the
-back button. Hashlisten solves that by continuously monitoring
-the URL hash and triggering a callback when it's changed.
+The usual approach to single-page apps are URL's like
+`http://domain.com/#!1938/article`. Livenavigate does the same thing,
+except that it your URL will be `http://domain.com/1938/article`, yet
+everything will be in-place via AJAX.
+
+This is only supported if your browser supports history states (FF4/Safari).
+Don't worry though--it will fallback to the hashbang method otherwise.
+
+For hashbang URL's, this relies on the awesome jQuery.hashListen. It
+uses the hash change event, and falls back to window timers if it's not
+available.
+
+End result: in-place navigation with nice URL's, no matter what browser.
 
 Usage
 -----
 
-    <!-- html -->
-    <a href="#/post/32">Go to the new post</a>
+    /* Bind this to like, say, <a> links */
+    $.navigate('/admin/products');
 
-    // This JS callback will be called after the link is clicked
-    $.hashListen('/post/:id', function (id) {
-        $("#content").html("Loading post number "+id+"...);
-        // etc
+If the history states are available (Safari/FF4), it will change the actual URL
+of the page, yet still /not/ load the URL directly (but instead just trigger the
+`navigate` event).
+
+    /* Here's how you listen to new pages */
+    $(window).bind('navigate', function (e, href) {
+      /* href == '/admin/products' */
     });
 
-More usage examples
--------------------
+If history states are not available, it will fall back to hashListen.
 
-    // Example for http://site.com/#/post/2/edit
-    $.hashListen('/post/:id/:action', function (id, action) {
-      console.log("Parameters: " + id + ", " + action);
-      //=> Parameters: 2, edit
+Hashlisten
+----------
 
-      console.log("Matches:");
-      console.log(this.matches); // same as [id, action]
-      //=> Matches: [2, 'edit']
-
-      console.log("The entire hash: " + this.hash);
-      //=> The entire hash: /post/2/edit
-
-      console.log("The previous hash: " + this.referrer);
-      //=> The previous hash: #whatever_was_before
-    });
+This includes a separate plugin hashListen. See README.hashlisten.md for
+notes on what it is.
 
 Authors
 -------
@@ -52,4 +52,23 @@ See more of our work on [www.sinefunc.com](http://www.sinefunc.com)!
 Copyright
 ---------
 
-(c) 2010 Rico Sta. Cruz and Sinefunc, Inc. See the LICENSE file for more details.
+Copyright (c) 2010-2011 Rico Sta. Cruz and Sinefunc, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
