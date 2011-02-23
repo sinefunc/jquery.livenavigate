@@ -37,17 +37,63 @@ of the page, yet still /not/ load the URL directly (but instead just trigger the
 
 If history states are not available, it will fall back to hashListen.
 
+Common example
+--------------
+
+In your HTML, include both JS files. (jQuery 1.3+ required)
+
+    <script src="jquery.js">
+    <script src="jquery.hashlisten.js">
+    <script src="jquery.livenavigate.js">
+
+Now you probably have links like this:
+
+    <a href="/product/12">Fish steamer</a>
+
+In your JS, let's bind all `<a>` links to open in-place.
+
+    $("a").live('click', function() {
+        // Ignore <a rel='external'>
+        if ($(this).is("[rel~=external]")) { return; }
+
+        // Navigate to it.
+        var href = $(this).attr('href');
+        $.navigate(href);
+
+        // Show a loading spinner or something.
+        $("#loading").show();
+    });
+
+Now let's hook it up to load the URL's via AJAX.
+
+    $window.bind('navigate'), function (e, href) {
+        // Load it via AJAX.
+        $.get(href, function(data)
+        {
+            // Pick out the content from it.
+            var $data = $("<div>").html(data);
+            var html  = $data.find('#content').html();
+
+            // Load it in place.
+            $("#content").html(html);
+
+            // Hide the spinner
+            $("#loading").hide();
+        });
+    });
+
+
 Hashlisten
 ----------
 
-This includes a separate plugin hashListen. See README.hashlisten.md for
+This includes a separate plugin Hashlisten. See README.hashlisten.md for
 notes on what it is.
 
 Authors
 -------
 
-Hashlisten is authored and maintained by Rico Sta. Cruz of Sinefunc, Inc.
-See more of our work on [www.sinefunc.com](http://www.sinefunc.com)!
+Livenavigate and Hashlisten are authored and maintained by Rico Sta. Cruz of
+Sinefunc, Inc. See more of our work on [www.sinefunc.com](http://www.sinefunc.com)!
 
 Copyright
 ---------
