@@ -54,7 +54,7 @@ In your JS, let's bind all `<a>` links to open in-place.
 
     $("a").live('click', function() {
         // Ignore <a rel='external'>
-        if ($(this).is("[rel~=external]")) { return; }
+        if ($(this).is("[rel~=external]")) { return true; }
 
         // Navigate to it.
         var href = $(this).attr('href');
@@ -62,11 +62,12 @@ In your JS, let's bind all `<a>` links to open in-place.
 
         // Show a loading spinner or something.
         $("#loading").show();
+        return false;
     });
 
 Now let's hook it up to load the URL's via AJAX.
 
-    $window.bind('navigate'), function (e, href) {
+    $window.bind('navigate', function (e, href) {
         // Load it via AJAX.
         $.get(href, function(data)
         {
